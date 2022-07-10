@@ -1,4 +1,4 @@
-package de.idealo.robot;
+package de.idealo.toyrobot.robot;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package de.idealo.robot;
+package de.idealo.toyrobot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

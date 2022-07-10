@@ -1,8 +1,8 @@
-package de.idealo.robot;
+package de.idealo.toyrobot.robot;
 
 public enum Direction {
     NORTH,
-    SOUTH,
     EAST,
+    SOUTH,
     WEST;
 }
