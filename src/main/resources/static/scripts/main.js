@@ -34,30 +34,38 @@ const onSubmit = (e) => {
     (inputField) => inputField.value
   );
 
-  fetchMovements(instructions);
+  updateRobot(instructions);
 };
 
-// Fetch robot movements from the backend
-const fetchMovements = async (instructions) => {
-  // Remove empty input fields
+// Update robot position
+const updateRobot = async (instructions) => {
+  // Remove empty instructions
   const trimmedInstructions = instructions.filter((instruction) => instruction);
 
+  // Get robot movements
+  const robot = await fetchMovements(trimmedInstructions);
+
+  if (!robot) {
+    return;
+  }
+  // Remove all inputs
+  removeMoveInputFields();
+
+  // Add first input
+  addMoveInput();
+
+  // Render the robot
+  renderRobot(robot);
+};
+
+const fetchMovements = async (instructions) => {
   try {
     const { data } = await axios.post("/robot", {
-      instructions: trimmedInstructions,
+      instructions,
       grid: { width: GRID_WIDTH, height: GRID_HEIGHT },
     });
 
-    let robot = data;
-
-    // Remove all inputs
-    removeMoveInputFields();
-
-    // Add first input
-    addMoveInput();
-
-    // Render the robot
-    renderRobot(robot);
+    return data;
   } catch (err) {
     alert("One or more instructions were not written properly. Try again");
   }
@@ -146,15 +154,20 @@ const deleteRobot = () => {
   if (robotImg) robotImg.remove();
 };
 
+const resetRobot = () => {
+  updateRobot(["POSITION 0 0 EAST"]);
+};
+
 // Add submit function to form
 document.getElementById("form").onsubmit = onSubmit;
 
-// Add addInput and removeInput functions to buttons
+// Add functionality to buttons
 document.getElementById("add-move").onclick = addMoveInput;
 document.getElementById("delete-move").onclick = removeMoveInput;
+document.getElementById("reset-robot").onclick = resetRobot;
 
 // Fetch robot initial position
-fetchMovements([]);
+updateRobot([]);
 
 // Add first move input
 addMoveInput();
