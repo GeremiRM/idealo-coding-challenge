@@ -60,7 +60,7 @@ movement instructions, and in the case, the robot goes out of the grid, the serv
 - Considering how constrained the instructions for the robot are, having text fields as input for the instructions might not be a good idea. Perhaps 
 something like a dropdown would be much better (Although if in the future the robot ends up accepting a lot of instructions, it might be cumbersome for the user to have to scroll through to find the right one).
 - Speaking of the instructions, increase the number of instructions the robot can accept. 
-- As mentioned, the frontend is using tailwind, however, it's tailwind's CDN which is not recommended for production.
+- As mentioned, the frontend is using tailwind, however, it's using tailwind's CDN which is not recommended for production.
 - Improve the overall look of the site. At the moment, while functional, both the UI and UX could definitely be improved.
 - Error handling. If the instructions are misspelled or formatted the wrong way, the server throws an IllegalArgumentException. While functional, it would
 be better to have a custom exception for these scenarios.
