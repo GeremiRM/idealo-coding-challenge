@@ -33,6 +33,7 @@ const onSubmit = (e) => {
   const instructions = Array.from(inputFields).map(
     (inputField) => inputField.value
   );
+
   fetchMovements(instructions);
 };
 
@@ -41,23 +42,29 @@ const fetchMovements = async (instructions) => {
   // Remove empty input fields
   const trimmedInstructions = instructions.filter((instruction) => instruction);
 
-  const response = await fetch("/robot", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(trimmedInstructions),
-  });
+  try {
+    const { data } = await axios.post("/robot", {
+      instructions: trimmedInstructions,
+      grid: { width: GRID_WIDTH, height: GRID_HEIGHT },
+    });
 
-  const robot = await response.json();
-  clearInputFields();
-  addMoveInput();
-  renderRobot(robot);
+    let robot = data;
+
+    // Remove all inputs
+    removeMoveInputFields();
+
+    // Add first input
+    addMoveInput();
+
+    // Render the robot
+    renderRobot(robot);
+  } catch (err) {
+    alert("One or more instructions were not written properly. Try again");
+  }
 };
 
 // Clear all input fields
-const clearInputFields = () => {
+const removeMoveInputFields = () => {
   const inputFields = document.getElementById("input-fields");
   inputFields.innerHTML = "";
 };
@@ -76,8 +83,7 @@ const addMoveInput = () => {
 const removeMoveInput = () => {
   const inputFields = document.getElementById("input-fields");
   // if only one child, do nothing
-  if(inputFields.children.length === 1)
-    return;
+  if (inputFields.children.length === 1) return;
 
   const lastInput = inputFields.lastChild;
   lastInput.remove();
@@ -105,10 +111,9 @@ const createInputElement = (fieldNumber) => {
 // ROBOT
 const renderRobot = (robot) => {
   deleteRobot();
+  const { x, y } = robot.coordinates;
 
-  const grid = document.getElementById(
-    `grid-${robot.coordinates.x}-${robot.coordinates.y}`
-  );
+  const grid = document.getElementById(`grid-${x}-${y}`);
   const robotImg = createRobot(robot.direction);
   grid.append(robotImg);
 };
@@ -132,7 +137,7 @@ const createRobot = (direction) => {
 
   robotImg.src = "./imgs/robot.png";
   robotImg.id = "robot";
-  robotImg.className = `h-auto max-[90px] w-2/6 ${rotation} absolute`;
+  robotImg.className = `h-auto max-[90px] min-w-[30px] w-2/6 ${rotation} absolute`;
   return robotImg;
 };
 

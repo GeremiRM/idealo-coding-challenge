@@ -12,11 +12,11 @@ public class Robot {
     private Direction direction;
 
     public void move(List<String> instructions) {
-        instructions.forEach(this::movementInstruction);
+        instructions.forEach((instruction) -> movementInstruction(instruction.toUpperCase()));
     }
 
     private void movementInstruction(String instruction) {
-        String instructionType = instruction.toUpperCase().split(" ")[0];
+        String instructionType = instruction.split(" ")[0];
 
         switch(instructionType) {
             case "POSITION" -> this.movePosition(instruction);
@@ -30,7 +30,7 @@ public class Robot {
 
     private void movePosition(String instruction) {
         // e.g POSITION 1 3 EAST
-        String regex = "POSITION \\d+ \\d+ [A-Z]+";
+        String regex = "POSITION \\d \\d [A-Z]+";
         if(!instruction.matches(regex))
             throw new IllegalArgumentException("The instructions have to be in the written in the following way: POSITION [coord x] [coord y] [direction]");
 
@@ -72,6 +72,8 @@ public class Robot {
     }
 
     private void moveTurnAround (String instruction) {
+        if(!instruction.equals("TURNAROUND"))
+            throw new IllegalArgumentException("The instructions have to be in the written in the following way: TURNAROUND");
         switch(this.getDirection()) {
             case NORTH -> this.setDirection(Direction.SOUTH);
             case EAST -> this.setDirection(Direction.WEST);
@@ -81,6 +83,8 @@ public class Robot {
     }
 
     private void moveRight (String instruction) {
+        if(!instruction.equals("RIGHT"))
+            throw new IllegalArgumentException("The instructions have to be in the written in the following way: RIGHT");
         switch(this.getDirection()) {
             case NORTH -> this.setDirection(Direction.EAST);
             case EAST -> this.setDirection(Direction.SOUTH);

@@ -1,12 +1,7 @@
 package de.idealo.toyrobot;
 
-import de.idealo.toyrobot.robot.Coordinates;
-import de.idealo.toyrobot.robot.Direction;
-import de.idealo.toyrobot.robot.Robot;
-import org.springframework.http.HttpStatus;
+import de.idealo.toyrobot.robot.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class RobotController {
@@ -16,8 +11,13 @@ public class RobotController {
     Robot robot = new Robot(DEFAULT_COORDINATES, DEFAULT_DIRECTION);
 
     @PostMapping("/robot")
-    public Robot moveRobot(@RequestBody List<String> instructions) {
-        robot.move(instructions);
+    public Robot moveRobot(@RequestBody MovementRequest movementRequest) {
+        robot.move(movementRequest.instructions);
+
+        if(movementRequest.grid.isRobotOutLimits(robot)) {
+            // Reset robot
+            robot = new Robot(DEFAULT_COORDINATES, DEFAULT_DIRECTION);
+        }
         return robot;
     }
 }
