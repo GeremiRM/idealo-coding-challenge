@@ -7,9 +7,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import org.springframework.http.MediaType;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.web.util.NestedServletException;
 
 
 @ExtendWith(SpringExtension.class)
@@ -20,10 +23,10 @@ class RobotApplicationTests {
 	private MockMvc mockMvc;
 
 	@Test
-	void robotMove() throws Exception {
+	void robotMovement() throws Exception {
 		String mockRequest = "{\"instructions\":[\"POSITION 1 1 EAST\", \"FORWARD 2\", \"RIGHT\", \"FORWARD 2\"], \"grid\": {\"width\": 5, \"height\": 5} }";
 
-		String expectedResponse = "{coordinates:{x: 3, y:3 }, direction: SOUTH}";
+		String expectedResponse = "{coordinates:{x:3, y:3}, direction: SOUTH}";
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/robot")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -44,5 +47,20 @@ class RobotApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(mockRequest))
 				.andExpect(content().json(expectedResponse));
+	}
+
+	// Expect server to throw exception if instruction is badly written
+	@Test()
+	void wrongInstructions() throws Exception {
+		assertThrows(NestedServletException.class,
+				() -> {
+					String mockRequest = "{\"instructions\":[\"POSITION 1 1 EAST\", \"FasdasORWARD 2\", \"RIGHT\", \"FORWARD 3\", \"FORWARD 3\"], \"grid\": {\"width\": 5, \"height\": 5} }";
+					String expectedResponse = "{coordinates: {x:0, y:0}, direction: EAST}";
+					MockHttpServletRequestBuilder postRequest = MockMvcRequestBuilders.post("/robot");
+					mockMvc.perform(postRequest
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(mockRequest))
+						.andExpect(content().json(expectedResponse));
+		});
 	}
 }
