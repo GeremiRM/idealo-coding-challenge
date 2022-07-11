@@ -25,29 +25,11 @@ Idealo coding challenge. Full stack project consiting of a Java Spring Boot back
 
 ## :sparkles: How to Run
 
-First you need to set up an .env file with the following value:
 
 ```bash
-REACT_APP_API_KEY=...
+./mvnw clean install
+./mvnw spring-boot:run
 
-```
-
-This is the API KEY you get from CurrencyLayer. To obtain it, you first need to register.
-
-Once you set that up, open your terminal and run:
-
-With docker-compose:
-
-```bash
-  # On the root of the project (if using linux, remember to add sudo at the begining)
-  docker-compose up
-```
-
-With npm:
-
-```bash
-  npm install
-  npm run start
 ```
 
 If everything went well, the application should be running on localhost:8080
